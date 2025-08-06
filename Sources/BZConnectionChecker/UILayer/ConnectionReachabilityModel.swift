@@ -11,22 +11,29 @@ import Foundation
 @MainActor
 public final class ConnectionReachabilityModel: ObservableObject {
 
-  let networkConnectionChecker: NetworkConnectionChecker
   let connectionReachability: ConnectionReachability
 
-  public init(
-    networkConnectionChecker: NetworkConnectionChecker,
-    connectionReachability: ConnectionReachability
-  ) {
-    self.networkConnectionChecker = networkConnectionChecker
+  public init(connectionReachability: ConnectionReachability) {
     self.connectionReachability = connectionReachability
+    startNetworkStateMonitoring()
+  }
+
+  @Published public var isInternetAvailable = false
+
+  public func startNetworkStateMonitoring() {
     Task {
       await connectionReachability.setDelegate(self)
       await connectionReachability.startMonitoring()
     }
   }
 
-  @Published public var isInternetAvailable = false
+  public func stopNetworkStateMonitoring() {
+    Task {
+      await connectionReachability.stopMonitoring()
+    }
+  }
+
+  // MARK: - • ConnectionReachability.MainDelegate
 
   public func didUpdateConnectionState(isConnected: Bool) {
     isInternetAvailable = isConnected
