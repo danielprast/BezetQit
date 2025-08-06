@@ -10,37 +10,24 @@ import Network
 
 
 public actor ConnectionReachability {
-  let monitor = NWPathMonitor()
-  let queue = DispatchQueue.global(qos: .background)
-  private weak var delegate: MainDelegate?
 
-  private var _isConnected = false
-
-  public var isConnected: Bool {
-    get async {
-      _isConnected
-    }
-  }
+  private let monitor = NWPathMonitor()
+  private let queue = DispatchQueue.global(qos: .background)
 
   public init() {}
 
   deinit {
-    monitor.cancel()
+    print("💥 \(Self.self) • destroyed")
   }
 
-  public func setDelegate(_ delegate: MainDelegate) {
-    self.delegate = delegate
-  }
+  private weak var delegate: MainDelegate?
+  private var _isConnected = false
+  private var streamContinuation: AsyncStream<NWPath>.Continuation?
 
-  public func startMonitoring() async {
-    for await value in networkPaths() {
-      _isConnected = value.status == .satisfied
-      await delegate?.didUpdateConnectionState(isConnected: _isConnected)
-    }
-  }
-
-  public func networkPaths() -> AsyncStream<NWPath> {
+  private lazy var networkPathsStream: AsyncStream<NWPath> = {
     AsyncStream { continuation in
+      streamContinuation = continuation
+
       monitor.pathUpdateHandler = { path in
         continuation.yield(path)
       }
@@ -50,8 +37,27 @@ public actor ConnectionReachability {
       }
 
       monitor.start(queue: queue)
-      print("🚀 monitor.start")
+      print("🚀 network state monitoring • start")
     }
+  }()
+
+  public var isConnected: Bool {
+    get async { _isConnected }
+  }
+
+  public func setDelegate(_ delegate: MainDelegate) {
+    self.delegate = delegate
+  }
+
+  public func startMonitoring() async {
+    for await value in networkPathsStream {
+      _isConnected = value.status == .satisfied
+      await delegate?.didUpdateConnectionState(isConnected: _isConnected)
+    }
+  }
+
+  public func stopMonitoring() async {
+    streamContinuation?.finish()
   }
 
   // MARK: - •
