@@ -12,10 +12,6 @@ let package = Package(
       targets: ["BZConnectionChecker"]
     ),
     .library(
-      name: "BZNetwork",
-      targets: ["BZNetwork"]
-    ),
-    .library(
       name: "BZUtil",
       targets: ["BZUtil"]
     ),
@@ -23,10 +19,6 @@ let package = Package(
   targets: [    
     .target(
       name: "BZConnectionChecker",
-      dependencies: ["BZUtil"]
-    ),
-    .target(
-      name: "BZNetwork",
       dependencies: ["BZUtil"]
     ),
     .target(
