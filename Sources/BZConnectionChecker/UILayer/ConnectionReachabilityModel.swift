@@ -8,8 +8,7 @@
 import Foundation
 
 
-@MainActor
-public final class ConnectionReachabilityModel: ObservableObject {
+@MainActor public final class ConnectionReachabilityModel: ObservableObject {
 
   let connectionReachability: ConnectionReachability
 
@@ -44,3 +43,15 @@ public final class ConnectionReachabilityModel: ObservableObject {
 
 
 extension ConnectionReachabilityModel: ConnectionReachability.MainDelegate {}
+
+
+extension ConnectionReachabilityModel {
+
+  public enum Factory {
+
+    @MainActor public static func newInstance() -> ConnectionReachabilityModel {
+      ConnectionReachabilityModel(connectionReachability: ConnectionReachability())
+    }
+  }
+
+}
