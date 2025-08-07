@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
   name: "BezetQit",
-  platforms: [.iOS(.v13)],
+  platforms: [.iOS(.v15)],
   products: [
     .library(
       name: "BZConnectionChecker",
@@ -15,13 +15,22 @@ let package = Package(
       name: "BZNetwork",
       targets: ["BZNetwork"]
     ),
+    .library(
+      name: "BZUtil",
+      targets: ["BZUtil"]
+    ),
   ],
   targets: [    
     .target(
-      name: "BZConnectionChecker"
+      name: "BZConnectionChecker",
+      dependencies: ["BZUtil"]
     ),
     .target(
-      name: "BZNetwork"
+      name: "BZNetwork",
+      dependencies: ["BZUtil"]
+    ),
+    .target(
+      name: "BZUtil"
     ),
     .testTarget(
       name: "BZConnectionCheckerTests",
