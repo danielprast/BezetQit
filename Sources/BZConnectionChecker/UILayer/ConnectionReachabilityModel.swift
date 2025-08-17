@@ -8,7 +8,7 @@
 import Foundation
 
 
-@MainActor public final class ConnectionReachabilityModel: ObservableObject {
+@MainActor open class ConnectionReachabilityModel: ObservableObject {
 
   let connectionReachability: ConnectionReachability
 
@@ -17,16 +17,16 @@ import Foundation
     startNetworkStateMonitoring()
   }
 
-  @Published public var isInternetAvailable = false
+  @Published open var isInternetAvailable = false
 
-  public func startNetworkStateMonitoring() {
+  open func startNetworkStateMonitoring() {
     Task {
       await connectionReachability.setDelegate(self)
       await connectionReachability.startMonitoring()
     }
   }
 
-  public func stopNetworkStateMonitoring() {
+  open func stopNetworkStateMonitoring() {
     Task {
       await connectionReachability.stopMonitoring()
     }
@@ -34,7 +34,7 @@ import Foundation
 
   // MARK: - • ConnectionReachability.MainDelegate
 
-  public func didUpdateConnectionState(isConnected: Bool) {
+  open func didUpdateConnectionState(isConnected: Bool) {
     isInternetAvailable = isConnected
     print("• is connected : \(isConnected)")
   }
