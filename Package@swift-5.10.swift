@@ -1,6 +1,6 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.10
 //
-// Package.swift
+//  Package@swift-5.10.swift
 
 import PackageDescription
 
@@ -37,5 +37,5 @@ let package = Package(
       dependencies: ["BZConnectionChecker"]
     ),
   ],
-  swiftLanguageModes: [.v6]
+  swiftLanguageModes: [.v5]
 )
