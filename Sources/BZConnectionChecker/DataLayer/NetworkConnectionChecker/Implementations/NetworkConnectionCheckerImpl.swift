@@ -8,7 +8,7 @@
 import Foundation
 import Network
 
-
+/// Deprecated, use NetworkConnectionCheckerImpl_V2 instead.
 public actor NetworkConnectionCheckerImpl: NetworkConnectionChecker {
 
   let connectionReachability: ConnectionReachability
